@@ -126,6 +126,8 @@ open class OTResizableView: UIView, UIGestureRecognizerDelegate {
     
     private var gripPointView = OTGripPointView()
     
+    private var isCirclar: Bool = false // ac
+    
     //MARK: - Initialize
     public init(contentView: UIView) {
         super.init(frame: contentView.frame.insetBy(dx: -gripPointDiameter, dy: -gripPointDiameter))
@@ -133,6 +135,17 @@ open class OTResizableView: UIView, UIGestureRecognizerDelegate {
         initialize()
         
         setContentView(newContentView: contentView)
+    }
+    
+    public init(contentView: UIView, isCirclar: Bool) {
+        self.isCirclar = isCirclar
+        super.init(frame: contentView.frame.insetBy(dx: -gripPointDiameter, dy: -gripPointDiameter))
+        
+        initialize()
+        
+        setContentView(newContentView: contentView)
+        keepAspectEnabled = isCirclar
+        // transform = transform.rotated(by: CGFloat(Double.pi / 4))
     }
     
     
@@ -168,7 +181,16 @@ open class OTResizableView: UIView, UIGestureRecognizerDelegate {
     
     
     private func prepareGripPointView() {
+//        if isCirclar {
+//            // assume width == height
+//            let radius = bounds.width / 2.0
+//            let innerSquareX = (1 - 1 / sqrt(2.0)) * radius
+//            gripPointView = OTGripPointView.init(frame: bounds.insetBy(dx: innerSquareX, dy: innerSquareX))
+//            gripPointView.layer.cornerRadius = gripPointView.bounds.width / 2.0
+//        } else {
         gripPointView = OTGripPointView.init(frame: bounds)
+//        }
+
         gripPointView.isHidden = true
         
         gripPointView.viewStrokeColor = viewStrokeColor
@@ -195,6 +217,20 @@ open class OTResizableView: UIView, UIGestureRecognizerDelegate {
         super.frame = newFrame
         contentView.frame = bounds.insetBy(dx: gripPointDiameter, dy: gripPointDiameter)
         gripPointView.frame = bounds
+        
+        if isCirclar {
+            contentView.layer.cornerRadius = contentView.bounds.width / 2.0
+            //
+            //            // assume width == height
+            //            let radius = bounds.width / 2.0
+            //            let innerSquareX = (1 - 1 / sqrt(2.0)) * radius
+            //            gripPointView.frame = bounds.insetBy(dx: innerSquareX, dy: innerSquareX)
+            //
+            //            gripPointView.layer.cornerRadius = gripPointView.bounds.width / 2.0
+            //        } else {
+            
+        }
+        
         gripPointView.setNeedsDisplay()
     }
     
